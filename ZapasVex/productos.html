@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle del Producto - Zapas Vex</title>
+  <style>
+    body { 
+      margin:0; 
+      font-family:"Times New Roman", Times, serif; /* 🔹 igual que index */
+      text-transform:uppercase; 
+      background:#f8f8f8; 
+      color:#222; 
+    }
+    header { 
+      background:black; 
+      color:white; 
+      padding:10px 20px; 
+      display:flex; 
+      align-items:center; 
+      justify-content:space-between; 
+    }
+    header img { height:50px; }
+    nav { display:flex; align-items:center; gap:20px; }
+    nav ul { 
+      list-style:none; 
+      display:flex; 
+      gap:20px; 
+      margin:0; 
+      padding:0; 
+      align-items:center; 
+    }
+    nav a { 
+      color:white; 
+      text-decoration:none; 
+      font-weight:bold; 
+      font-family:"Times New Roman", Times, serif;
+      text-transform:uppercase;
+      line-height:1;
+      display:flex;
+      align-items:center;
+    }
+    /* --- carrito naranja --- */
+    .cart-box {
+      background:#ff6600;
+      color:white;
+      font-weight:bold;
+      padding:6px 12px;
+      border-radius:6px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-left:20px;
+      text-decoration:none;
+      font-family:"Times New Roman", Times, serif;
+    }
+    .cart-box img {
+      width:18px;
+      height:18px;
+    }
+    .cart-count {
+      background:black;
+      color:white;
+      border-radius:50%;
+      padding:2px 6px;
+      font-size:13px;
+      font-weight:bold;
+      font-family:"Times New Roman", Times, serif;
+    }
+
+    .container { display:flex; gap:50px; padding:40px; max-width:1200px; margin:auto; font-family:"Times New Roman", Times, serif; }
+    .left { flex:1; }
+    .left img { width:100%; border-radius:10px; }
+    .right { flex:1; }
+    .right h1 { font-size:28px; margin-bottom:10px; font-family:"Times New Roman", Times, serif; }
+    .price { font-size:22px; margin:15px 0; font-family:"Times New Roman", Times, serif; }
+    .price del { color:gray; margin-left:10px; }
+    .discount-tag { display:inline-block; background:black; color:white; font-size:14px; padding:3px 7px; border-radius:4px; margin-left:10px; font-family:"Times New Roman", Times, serif; }
+
+    .sizes { margin: 20px 0; }
+    .sizes label { display:block; margin-bottom:8px; font-weight:bold; font-family:"Times New Roman", Times, serif; }
+    .size-grid{
+      display:grid;
+      grid-template-columns: repeat(6, auto);
+      gap: 12px;
+      justify-content: start;
+    }
+    .size-btn{
+      padding: 10px 0;
+      min-width: 50px;
+      text-align: center;
+      border:1px solid #d9d9d9;
+      border-radius:6px;
+      background:#fff;
+      font-weight:600;
+      cursor:pointer;
+      transition: background .15s, border-color .15s, transform .05s;
+      font-family:"Times New Roman", Times, serif;
+      text-transform:uppercase;
+    }
+    .size-btn:hover{ background:#f3f3f3; border-color:#bdbdbd; }
+    .size-btn:active{ transform: scale(0.97); }
+    .size-btn[aria-pressed="true"]{ background:#111; color:#fff; border-color:#111; }
+
+    .error-msg {
+      color:#b00000;
+      font-size:14px;
+      margin-top:8px;
+      display:none;
+      font-family:"Times New Roman", Times, serif;
+    }
+
+    .cart { display:flex; align-items:center; gap:10px; margin-top:20px; }
+    .cart input { width:60px; padding:5px; text-align:center; font-family:"Times New Roman", Times, serif; }
+    .cart button { 
+      background:#ffcc00; 
+      border:none; 
+      padding:12px 20px; 
+      border-radius:6px; 
+      font-weight:bold; 
+      cursor:pointer; 
+      font-family:"Times New Roman", Times, serif;
+      text-transform:uppercase;
+    }
+    .cart button:hover { background:#e6b800; }
+
+    /* --- Dropdown y Submenú --- */
+    .has-dropdown {
+      position: relative;
+    }
+    .has-dropdown > a::after {
+      content: " ▼";
+      font-size: 12px;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: black;
+      padding: 15px;
+      min-width: 220px;
+      border-radius: 4px;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1000;
+    }
+
+    .has-dropdown:hover .dropdown {
+      display: flex;
+    }
+
+    .dropdown a {
+      color: white;
+      padding: 6px 10px;
+      text-decoration: none;
+      font-size: 14px;
+      font-family:"Times New Roman", Times, serif;
+    }
+    .dropdown a:hover {
+      background: #ff6600;
+      border-radius: 4px;
+    }
+
+    /* Submenú dentro de JORDAN */
+    .has-submenu {
+      position: relative;
+    }
+    .has-submenu > a::after {
+      content: "";
+      font-size: 12px;
+    }
+
+    .submenu {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 100%;
+      background: black;
+      padding: 10px;
+      min-width: 200px;
+      border-radius: 4px;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .has-submenu:hover .submenu {
+      display: flex;
+    }
+
+    .submenu a {
+      padding: 5px 10px;
+      font-size: 13px;
+      font-family:"Times New Roman", Times, serif;
+    }
+    .submenu a:hover {
+      background: #ff6600;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- Izquierda: logo -->
+    <div class="logo">
+      <img src="file:///C:/Users/marce/Downloads/image%20(1).png" alt="Zapas Logo">
+    </div>
+
+    <!-- Centro: menú -->
+    <nav>
+      <ul>
+        <li><a href="index.html">INICIO</a></li>
+        <li class="has-dropdown">
+          <a href="#">ZAPATILLAS</a>
+          <div class="dropdown">
+            <div class="has-submenu">
+              <a href="#">JORDAN</a>
+              <div class="submenu">
+                <a href="productos.html?categoria=air-jordan-1">Air Jordan 1</a>
+                <a href="productos.html?categoria=air-jordan-1-mid">Air Jordan 1 Mid</a>
+                <a href="productos.html?categoria=air-jordan-3">Jordan Retro 3</a>
+                <a href="productos.html?categoria=air-jordan-4">Jordan Retro 4</a>
+                <a href="productos.html?categoria=air-jordan-5">Jordan Retro 5</a>
+                <a href="productos.html?categoria=air-jordan-6">Jordan Retro 6</a>
+                <a href="productos.html?categoria=air-jordan-7">Jordan Retro 7</a>
+                <a href="productos.html?categoria=air-jordan-8">Jordan Retro 8</a>
+                <a href="productos.html?categoria=air-jordan-9">Jordan Retro 9</a>
+                <a href="productos.html?categoria=air-jordan-10">Jordan Retro 10</a>
+                <a href="productos.html?categoria=air-jordan-11">Jordan Retro 11</a>
+                <a href="productos.html?categoria=air-jordan-12">Jordan Retro 12</a>
+                <a href="productos.html?categoria=air-jordan-13">Jordan Retro 13</a>
+                <a href="productos.html?categoria=air-jordan-14">Jordan Retro 14</a>
+              </div>
+            </div>
+            <a href="productos.html?categoria=nike">Nike</a>
+            <a href="productos.html?categoria=adidas">Adidas</a>
+            <a href="productos.html?categoria=balenciaga">Balenciaga</a>
+            <a href="productos.html?categoria=alexander-mcqueen">Alexander McQueen</a>
+            <a href="productos.html?categoria=bape">Bape</a>
+            <a href="productos.html?categoria=dior">Dior</a>
+            <a href="productos.html?categoria=louis-vuitton">Louis Vuitton</a>
+            <a href="productos.html?categoria=versace">Versace</a>
+            <a href="productos.html?categoria=new-balance">New Balance</a>
+            <a href="productos.html?categoria=amiri">Amiri</a>
+            <a href="productos.html?categoria=converse">Converse</a>
+            <a href="productos.html?categoria=prada">Prada</a>
+            <a href="productos.html?categoria=ascis">Ascis</a>
+            <a href="productos.html?categoria=off-white">Off White</a>
+          </div>
+        </li>
+        <li><a href="#">ROPA</a></li>
+        <li><a href="#">ACCESORIOS</a></li>
+      </ul>
+    </nav>
+
+    <!-- Derecha: carrito -->
+    <div class="cart-container">
+      <a href="carrito.html" class="cart-box">
+        <span class="cart-icon">🛒</span>
+        <span id="cart-total">0,00 €</span>
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="left">
+      <img id="prod-img" src="" alt="Producto">
+    </div>
+    <div class="right">
+      <p>¡Oferta!</p>
+      <h1 id="prod-name"></h1>
+      <p class="price">
+        <span id="prod-price" style="color:#ff6600"></span> €
+        <del id="prod-original"></del> €
+        <span class="discount-tag" id="prod-discount"></span>
+      </p>
+
+      <!-- Cuadrados de tallas -->
+      <div class="sizes">
+        <label>Talla *</label>
+        <div class="size-grid">
+          <button class="size-btn" type="button">35</button>
+          <button class="size-btn" type="button">36</button>
+          <button class="size-btn" type="button">37</button>
+          <button class="size-btn" type="button">38</button>
+          <button class="size-btn" type="button">39</button>
+          <button class="size-btn" type="button">40</button>
+          <button class="size-btn" type="button">41</button>
+          <button class="size-btn" type="button">42</button>
+          <button class="size-btn" type="button">43</button>
+          <button class="size-btn" type="button">44</button>
+          <button class="size-btn" type="button">45</button>
+          <button class="size-btn" type="button">46</button>
+        </div>
+        <!-- mensaje de error -->
+        <p id="size-error" class="error-msg">Por favor, selecciona una opción</p>
+      </div>
+
+      <div class="cart">
+        <input type="number" id="prod-qty" value="1" min="1">
+        <button id="add-to-cart">Añadir al carrito</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function updateCart() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById("cart-total").textContent = total.toFixed(2) + " €";
+      document.getElementById("cart-count").textContent = count;
+    }
+    updateCart();
+
+    const producto = JSON.parse(localStorage.getItem("producto"));
+    if (producto) {
+      document.getElementById("prod-img").src = producto.img;
+      document.getElementById("prod-name").textContent = producto.name;
+      document.getElementById("prod-price").textContent = producto.price;
+      document.getElementById("prod-original").textContent = producto.original;
+      document.getElementById("prod-discount").textContent = `-${producto.discount}%`;
+    }
+
+    // Selección de talla
+    let selectedSize = null;
+    const sizeButtons = document.querySelectorAll('.size-btn');
+    const sizeError = document.getElementById('size-error');
+
+    sizeButtons.forEach(btn => {
+      btn.setAttribute('aria-pressed', 'false');
+      btn.addEventListener('click', () => {
+        sizeButtons.forEach(b => b.setAttribute('aria-pressed','false'));
+        btn.setAttribute('aria-pressed','true');
+        selectedSize = btn.textContent;
+        sizeError.style.display = "none"; // ocultar error cuando selecciona
+      });
+    });
+
+    // Añadir al carrito
+    document.getElementById("add-to-cart").addEventListener("click", () => {
+      if (!selectedSize) {
+        sizeError.style.display = "block"; // mostrar error
+        return;
+      }
+
+      const qty = parseInt(document.getElementById("prod-qty").value);
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      const existing = cart.find(item => item.name === producto.name && item.size === selectedSize);
+      if (existing) {
+        existing.quantity += qty;
+      } else {
+        cart.push({...producto, size: selectedSize, quantity: qty});
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCart();
+    });
+  </script>
+</body>
+</html>

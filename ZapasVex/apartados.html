@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Apartados</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f8f8f8; }
+    header { padding: 20px; background: #111; color: white; }
+    h1 { margin: 0; text-transform: uppercase; }
+
+    .contenedor { display: flex; gap: 20px; padding: 20px; }
+    .sidebar { width: 250px; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .productos { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    
+    .producto { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); text-align: center; }
+    .producto img { max-width: 100%; border-radius: 8px; }
+    .producto h3 { font-size: 16px; margin: 10px 0; }
+    .precio { font-weight: bold; color: #f7a600; margin-bottom: 10px; }
+    .producto button { background: #f7a600; border: none; padding: 10px; border-radius: 6px; cursor: pointer; color: white; font-weight: bold; }
+    .producto button:hover { background: #d98c00; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="titulo-categoria">CATEGORÍA</h1>
+  </header>
+
+  <div class="contenedor">
+    <!-- FILTROS -->
+    <aside class="sidebar">
+      <h3>Filtrar por precio</h3>
+      <input type="range" min="50" max="200" value="100" id="filtroPrecio">
+      <p>Precio máximo: <span id="valorPrecio">100</span> €</p>
+      <button id="btnFiltrar">Filtrar</button>
+    </aside>
+
+    <!-- PRODUCTOS -->
+    <main class="productos" id="productos"></main>
+  </div>
+
+  <script>
+    // --- Catálogo de Jordans ---
+    const catalogo = {
+      "jordan-retro-1": [
+        { nombre: "Jordan 1 Chicago", precio: 89.99, imagen: "img/jordan1-chicago.jpg" },
+        { nombre: "Jordan 1 Royal", precio: 89.99, imagen: "img/jordan1-royal.jpg" }
+      ],
+      "jordan-retro-2": [
+        { nombre: "Jordan 2 OG White Red", precio: 95.00, imagen: "img/jordan2-white-red.jpg" }
+      ],
+      "jordan-retro-3": [
+        { nombre: "Jordan 3 Black Cement", precio: 99.00, imagen: "img/jordan3-black-cement.jpg" }
+      ],
+      "jordan-retro-4": [
+        { nombre: "Jordan 4 Pink", precio: 79.99, imagen: "img/jordan4-pink.jpg" },
+        { nombre: "Jordan 4 J Balvin", precio: 79.99, imagen: "img/jordan4-balvin.jpg" },
+        { nombre: "Jordan 4 Bike", precio: 79.99, imagen: "img/jordan4-bike.jpg" },
+        { nombre: "Jordan 4 Aluminium", precio: 79.99, imagen: "img/jordan4-aluminium.jpg" }
+      ],
+      "jordan-retro-5": [
+        { nombre: "Jordan 5 Fire Red", precio: 105.00, imagen: "img/jordan5-fire-red.jpg" }
+      ],
+      "jordan-retro-6": [
+        { nombre: "Jordan 6 Infrared", precio: 110.00, imagen: "img/jordan6-infrared.jpg" }
+      ],
+      "jordan-retro-7": [
+        { nombre: "Jordan 7 Bordeaux", precio: 115.00, imagen: "img/jordan7-bordeaux.jpg" }
+      ],
+      "jordan-retro-8": [
+        { nombre: "Jordan 8 Aqua", precio: 120.00, imagen: "img/jordan8-aqua.jpg" }
+      ],
+      "jordan-retro-9": [
+        { nombre: "Jordan 9 Space Jam", precio: 125.00, imagen: "img/jordan9-space-jam.jpg" }
+      ],
+      "jordan-retro-10": [
+        { nombre: "Jordan 10 Steel", precio: 130.00, imagen: "img/jordan10-steel.jpg" }
+      ],
+      "jordan-retro-11": [
+        { nombre: "Jordan 11 Concord", precio: 135.00, imagen: "img/jordan11-concord.jpg" }
+      ],
+      "jordan-retro-12": [
+        { nombre: "Jordan 12 Taxi", precio: 140.00, imagen: "img/jordan12-taxi.jpg" }
+      ],
+      "jordan-retro-13": [
+        { nombre: "Jordan 13 He Got Game", precio: 145.00, imagen: "img/jordan13-hegotgame.jpg" }
+      ],
+      "jordan-retro-14": [
+        { nombre: "Jordan 14 Last Shot", precio: 150.00, imagen: "img/jordan14-lastshot.jpg" }
+      ]
+    };
+
+    // --- Leer categoría desde la URL ---
+    const params = new URLSearchParams(window.location.search);
+    const categoria = params.get("categoria");
+
+    const titulo = document.getElementById("titulo-categoria");
+    const contenedor = document.getElementById("productos");
+    const filtroPrecio = document.getElementById("filtroPrecio");
+    const valorPrecio = document.getElementById("valorPrecio");
+
+    // Mostrar categoría en título
+    titulo.textContent = categoria ? categoria.replace(/-/g, " ").toUpperCase() : "TODOS LOS PRODUCTOS";
+
+    // Mostrar productos
+    function mostrarProductos(lista) {
+      contenedor.innerHTML = "";
+      lista.forEach(p => {
+        contenedor.innerHTML += `
+          <div class="producto">
+            <img src="${p.imagen}" alt="${p.nombre}">
+            <h3>${p.nombre}</h3>
+            <p class="precio">${p.precio} €</p>
+            <button>Seleccionar talla</button>
+          </div>
+        `;
+      });
+    }
+
+    // Productos iniciales
+    if (categoria && catalogo[categoria]) {
+      mostrarProductos(catalogo[categoria]);
+    } else {
+      contenedor.innerHTML = "<p>No se encontraron productos</p>";
+    }
+
+    // Filtro de precio
+    filtroPrecio.addEventListener("input", () => {
+      valorPrecio.textContent = filtroPrecio.value;
+    });
+
+    document.getElementById("btnFiltrar").addEventListener("click", () => {
+      if (categoria && catalogo[categoria]) {
+        const filtrados = catalogo[categoria].filter(p => p.precio <= filtroPrecio.value);
+        mostrarProductos(filtrados);
+      }
+    });
+  </script>
+</body>
+</html>
